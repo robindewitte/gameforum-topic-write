@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using writeservice.Messaging;
 
 namespace writeservice
 {
@@ -32,6 +33,7 @@ namespace writeservice
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "writeservice", Version = "v1" });
             });
+            services.AddHostedService<MessageConsumer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
