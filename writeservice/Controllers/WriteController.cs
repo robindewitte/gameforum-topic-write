@@ -10,7 +10,7 @@ namespace writeservice.Controllers
     {
        public void DoWriteStuffMock()
        {
-            Console.WriteLine(DateTime.Now.ToString());
+            Console.WriteLine(DateTime.Now.ToString() + DateTime.Now.Millisecond.ToString());
        }
     }
 }
