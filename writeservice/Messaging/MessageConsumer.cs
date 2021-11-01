@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using fictivusforum_writeservice.DataModels;
+using fictivusforum_writeservice.DTO;
+using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
@@ -57,6 +60,34 @@ namespace writeservice.Messaging
 
             consumer.Received += (model, ea) =>
             {
+                string content = Encoding.UTF8.GetString(ea.Body.ToArray());
+                if (content.StartsWith("postresponse"))
+                {
+                    string toConvert = content.Substring(12);
+                    Response responseToPost = JsonConvert.DeserializeObject<Response>(toConvert);
+                    writeController.PostResponse(responseToPost.TopicTitle, responseToPost.UserName, responseToPost.TimeOfPosting,
+                        responseToPost.Content);
+                }
+                else if (content.StartsWith("posttopic"))
+                {
+                    string toConvert = content.Substring(9);
+                    Topic topicToPost = JsonConvert.DeserializeObject<Topic>(toConvert);
+                    writeController.PostTopic(topicToPost.Username, topicToPost.Title, topicToPost.TimeOfPosting,
+                        topicToPost.Subject);
+                }
+                else if (content.StartsWith("deleteresponse"))
+                {
+                    string toConvert = content.Substring(14);
+                    Response responseToDelete = JsonConvert.DeserializeObject<Response>(toConvert);
+                    writeController.DeleteResponse(responseToDelete.TopicTitle, responseToDelete.UserName, responseToDelete.TimeOfPosting,
+                        responseToDelete.Content);
+                }
+                else if (content.StartsWith("deletetopic"))
+                {
+                    string toConvert = content.Substring(11);
+                    TopicDTO topicToDelete = JsonConvert.DeserializeObject<TopicDTO>(toConvert);
+                    writeController.DeleteTopic(topicToDelete.Title);
+                }
                 writeController.DoWriteStuffMock();
                 _channel.BasicAck(ea.DeliveryTag, false);
             };
