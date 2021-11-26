@@ -1,5 +1,7 @@
+using fictivusforum_writeservice.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -33,6 +35,16 @@ namespace writeservice
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "writeservice", Version = "v1" });
             });
+            services.AddSingleton<Func<TopicContext>>(() =>
+            {
+                var optionsBuilder = new DbContextOptionsBuilder<TopicContext>();
+                optionsBuilder.UseSqlServer(Configuration.GetConnectionString("TopicContext"));
+                return new TopicContext(optionsBuilder.Options);
+            });
+            var connection = Configuration.GetConnectionString("TopicContext");
+            services.AddDbContext<TopicContext>(options =>
+            options.UseSqlServer(connection)
+            );
             services.AddHostedService<MessageConsumer>();
         }
 

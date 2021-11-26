@@ -1,5 +1,6 @@
 ﻿using fictivusforum_writeservice.DataModels;
 using fictivusforum_writeservice.DTO;
+using fictivusforum_writeservice.Repositories;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
@@ -20,8 +21,11 @@ namespace writeservice.Messaging
         private IConnection _connection;
         private IModel _channel;
 
-        public MessageConsumer()
+        private readonly Func<TopicContext> _appDbContextFactory;
+
+        public MessageConsumer(Func<TopicContext> appDbContextFactory)
         {
+            _appDbContextFactory = appDbContextFactory;
             _factory = new ConnectionFactory() { HostName = "localhost" };
 
             _connection = _factory.CreateConnection();
@@ -47,7 +51,8 @@ namespace writeservice.Messaging
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            WriteController writeController = new WriteController();
+
+            WriteController writeController = new WriteController(_appDbContextFactory());
 
             if (stoppingToken.IsCancellationRequested)
             {
@@ -65,30 +70,31 @@ namespace writeservice.Messaging
                 {
                     string toConvert = content.Substring(12);
                     Response responseToPost = JsonConvert.DeserializeObject<Response>(toConvert);
-                    writeController.PostResponse(responseToPost.TopicTitle, responseToPost.UserName, responseToPost.TimeOfPosting,
-                        responseToPost.Content);
+                    //looks weird for testing
+                    var response = writeController.PostResponse(responseToPost.TopicTitle, responseToPost.UserName, responseToPost.TimeOfPosting,
+                        responseToPost.Content, responseToPost.TopicSubject);
                 }
                 else if (content.StartsWith("posttopic"))
                 {
                     string toConvert = content.Substring(9);
                     Topic topicToPost = JsonConvert.DeserializeObject<Topic>(toConvert);
-                    writeController.PostTopic(topicToPost.Username, topicToPost.Title, topicToPost.TimeOfPosting,
+                    //looks weird for testing
+                    var response = writeController.PostTopic(topicToPost.Username, topicToPost.Title, topicToPost.TimeOfPosting,
                         topicToPost.Subject);
                 }
                 else if (content.StartsWith("deleteresponse"))
                 {
                     string toConvert = content.Substring(14);
                     Response responseToDelete = JsonConvert.DeserializeObject<Response>(toConvert);
-                    writeController.DeleteResponse(responseToDelete.TopicTitle, responseToDelete.UserName, responseToDelete.TimeOfPosting,
+                    var response  = writeController.DeleteResponse(responseToDelete.TopicTitle, responseToDelete.UserName, responseToDelete.TimeOfPosting,
                         responseToDelete.Content);
                 }
                 else if (content.StartsWith("deletetopic"))
                 {
                     string toConvert = content.Substring(11);
                     TopicDTO topicToDelete = JsonConvert.DeserializeObject<TopicDTO>(toConvert);
-                    writeController.DeleteTopic(topicToDelete.Title);
+                    var response = writeController.DeleteTopic(topicToDelete.Title);
                 }
-                writeController.DoWriteStuffMock();
                 _channel.BasicAck(ea.DeliveryTag, false);
             };
 

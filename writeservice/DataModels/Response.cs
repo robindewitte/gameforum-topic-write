@@ -16,6 +16,8 @@ namespace fictivusforum_writeservice.DataModels
         public string UserName { get; set; }
         public DateTime TimeOfPosting { get; set; }
         public string Content { get; set; }
+
+        public string TopicSubject { get; set; }
         #endregion
 
         #region constructors
@@ -23,12 +25,13 @@ namespace fictivusforum_writeservice.DataModels
         public Response() { }
 
         public Response(string topicTitle, string username, DateTime timeOfPosting,
-            string content)
+            string content, string topicSubject)
         {
             TopicTitle = topicTitle;
             UserName = username;
             TimeOfPosting = timeOfPosting;
             Content = content;
+            TopicSubject = topicSubject;
         }
         #endregion
     }

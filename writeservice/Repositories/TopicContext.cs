@@ -15,5 +15,6 @@ namespace fictivusforum_writeservice.Repositories
 
         }
         public DbSet<Topic> Topics { get; set; }
+        public DbSet<Response> Responses { get; set; }
     }
 }
