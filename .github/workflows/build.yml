@@ -9,7 +9,10 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+   runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./writeservice
 
     steps:
     - uses: actions/checkout@v2
