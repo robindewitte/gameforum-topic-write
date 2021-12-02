@@ -10,10 +10,10 @@ COPY ["writeservice.csproj", "."]
 RUN dotnet restore "./writeservice.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "writeservice.csproj" -c Release -o /app/build
+RUN dotnet build "writeservice/writeservice.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "writeservice.csproj" -c Release -o /app/publish
+RUN dotnet publish "writeservice/writeservice.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
