@@ -6,8 +6,8 @@ EXPOSE 5000
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["writeservice.csproj", "."]
-RUN dotnet restore "./writeservice.csproj"
+COPY ["writeservice/writeservice.csproj", "."]
+RUN dotnet restore "writeservice/writeservice.csproj"
 COPY . .
 WORKDIR "/src/."
 RUN dotnet build "writeservice/writeservice.csproj" -c Release -o /app/build
