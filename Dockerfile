@@ -18,4 +18,4 @@ RUN dotnet publish "fictivusforum_writeservice.csproj" -c Release -o /app/publis
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "writeservice.dll"]
+ENTRYPOINT ["dotnet", "fictivusforum_writeservice.dll"]
