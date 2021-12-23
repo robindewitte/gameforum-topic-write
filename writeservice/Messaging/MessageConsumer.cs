@@ -26,7 +26,7 @@ namespace writeservice.Messaging
         public MessageConsumer(Func<TopicContext> appDbContextFactory)
         {
             _appDbContextFactory = appDbContextFactory;
-            _factory = new ConnectionFactory() { Hostname = "localhost" };
+            _factory = new ConnectionFactory() { HostName = "localhost" };
 
             _connection = _factory.CreateConnection();
 
