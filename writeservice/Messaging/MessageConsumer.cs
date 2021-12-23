@@ -26,7 +26,7 @@ namespace writeservice.Messaging
         public MessageConsumer(Func<TopicContext> appDbContextFactory)
         {
             _appDbContextFactory = appDbContextFactory;
-            _factory = new ConnectionFactory() { HostName = "localhost" };
+            _factory = new ConnectionFactory() { Uri = new Uri("amqp://guest:guest@localhost-server-0:5672") };
 
             _connection = _factory.CreateConnection();
 
