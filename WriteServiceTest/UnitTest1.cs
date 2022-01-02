@@ -15,6 +15,8 @@ using System.Linq;
 
 namespace WriteServiceTest
 {
+    //geschrapt om rewrite en tijdsgebrek
+    /*
     public class UnitTest1
     {
         private readonly TestServer _server;
@@ -182,4 +184,5 @@ namespace WriteServiceTest
             }
         }
     }
+    */
 }

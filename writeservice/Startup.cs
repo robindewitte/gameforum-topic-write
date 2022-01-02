@@ -13,7 +13,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using writeservice.Messaging;
 
 namespace writeservice
 {
@@ -35,15 +34,9 @@ namespace writeservice
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "writeservice", Version = "v1" });
             });
-            services.AddSingleton<Func<TopicContext>>(() =>
-            {
-                var optionsBuilder = new DbContextOptionsBuilder<TopicContext>();
-                optionsBuilder.UseSqlServer(Configuration.GetConnectionString("TopicContext"));
-                return new TopicContext(optionsBuilder.Options);
-            });
             var connection = Configuration.GetConnectionString("TopicContext");
             services.AddDbContext<TopicContext>(options =>
-            options.UseSqlServer(connection)
+            options.UseSqlServer(connection, options => options.EnableRetryOnFailure())
             );
         }
 
