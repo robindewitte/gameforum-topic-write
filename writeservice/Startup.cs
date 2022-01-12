@@ -34,6 +34,17 @@ namespace writeservice
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "writeservice", Version = "v1" });
             });
+             services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                      builder =>
+                      {
+                          builder.WithOrigins()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowAnyOrigin();
+                      });
+            });
             var connection = Configuration.GetConnectionString("TopicContext");
             services.AddDbContext<TopicContext>(options =>
             options.UseSqlServer(connection, options => options.EnableRetryOnFailure())
@@ -49,7 +60,7 @@ namespace writeservice
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "writeservice v1"));
             }
-
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseHttpsRedirection();
 
             app.UseRouting();
