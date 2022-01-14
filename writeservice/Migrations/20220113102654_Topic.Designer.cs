@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fictivusforum_writeservice.Repositories;
 
-namespace fictivusforum_writeservice.Migrations
+namespace writeservice.Migrations
 {
     [DbContext(typeof(TopicContext))]
-    [Migration("20211103143302_topics")]
-    partial class topics
+    [Migration("20220113102654_Topic")]
+    partial class Topic
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,6 +32,9 @@ namespace fictivusforum_writeservice.Migrations
 
                     b.Property<DateTime>("TimeOfPosting")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("TopicSubject")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TopicTitle")
                         .HasColumnType("nvarchar(max)");

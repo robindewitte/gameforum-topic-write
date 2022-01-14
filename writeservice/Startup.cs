@@ -13,12 +13,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using writeservice.Messaging;
 
 namespace writeservice
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -35,17 +35,21 @@ namespace writeservice
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "writeservice", Version = "v1" });
             });
-            services.AddSingleton<Func<TopicContext>>(() =>
+             services.AddCors(options =>
             {
-                var optionsBuilder = new DbContextOptionsBuilder<TopicContext>();
-                optionsBuilder.UseSqlServer(Configuration.GetConnectionString("TopicContext"));
-                return new TopicContext(optionsBuilder.Options);
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                      builder =>
+                      {
+                          builder.WithOrigins()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowAnyOrigin();
+                      });
             });
             var connection = Configuration.GetConnectionString("TopicContext");
             services.AddDbContext<TopicContext>(options =>
-            options.UseSqlServer(connection)
+            options.UseSqlServer(connection, options => options.EnableRetryOnFailure())
             );
-            services.AddHostedService<MessageConsumer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,7 +61,7 @@ namespace writeservice
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "writeservice v1"));
             }
-
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseHttpsRedirection();
 
             app.UseRouting();

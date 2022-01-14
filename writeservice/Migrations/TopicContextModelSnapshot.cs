@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using fictivusforum_writeservice.Repositories;
 
-namespace fictivusforum_writeservice.Migrations
+namespace writeservice.Migrations
 {
     [DbContext(typeof(TopicContext))]
     partial class TopicContextModelSnapshot : ModelSnapshot
@@ -30,6 +30,9 @@ namespace fictivusforum_writeservice.Migrations
 
                     b.Property<DateTime>("TimeOfPosting")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("TopicSubject")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TopicTitle")
                         .HasColumnType("nvarchar(max)");
